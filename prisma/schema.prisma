@@ -8,9 +8,10 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  mobile    String   @unique
-  createdAt DateTime @default(now())
+  id         Int        @id @default(autoincrement())
+  mobile     String     @unique
+  createdAt  DateTime   @default(now())
+  properties Property[]
 }
 
 model Otp {
@@ -19,4 +20,40 @@ model Otp {
   otp       String
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model Property {
+  id             Int       @id @default(autoincrement())
+  userId         Int?
+  city           String
+  propertyType   String
+  propertyName   String?
+  category       String?
+  floor          Int?
+  totalFloor     Int?
+  description    String?
+  ownershipType  String?
+  builtUpArea    Float?
+  propertyAge    String?
+  facing         String?
+  noticePeriod   Int?
+  occupancy      String?
+  availableFrom  DateTime?
+  location       String?
+  street         String?
+  locality       String?
+  landmark       String?
+  pincode        String?
+  parking        String?
+  gateSecurity   Boolean?
+  furnishing     String?
+  rent           Float?
+  maintenance    Float?
+  deposit        Float?
+  rentNegotiable Boolean?
+  currentStep    Int       @default(1)
+  isDraft        Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User?     @relation(fields: [userId], references: [id])
 }

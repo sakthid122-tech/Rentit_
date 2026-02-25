@@ -2,22 +2,37 @@ import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as dotenv from "dotenv";
+import * as path from "path";
 
-dotenv.config();
+dotenv.config({
+  path: path.resolve(__dirname, "../.env"),
+});
+
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Enable CORS
   app.enableCors({
     origin: "*",
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type, Authorization",
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  // Enable Global Validation Pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,              // Removes properties not in DTO
+      forbidNonWhitelisted: true,   // Throws error if extra properties sent
+      transform: true,              // Automatically transforms payloads to DTO instances
+    }),
+  );
 
-  await app.listen(process.env.PORT || 5000);
-  console.log("Server running on port", process.env.PORT || 5000);
+  const PORT = process.env.PORT || 5000;
+
+  await app.listen(PORT);
+  console.log(`Server running on port ${PORT}`);
 }
 
 bootstrap();
